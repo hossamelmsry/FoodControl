@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/drawable-v24/bg_green_corner.xml" value="0.23958333333333334" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/drawable-v24/bg_white_corner.xml" value="0.23958333333333334" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/drawable/ic_rate_24.xml" value="0.23958333333333334" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/activity_add_product.xml" value="0.1550925925925926" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/activity_category.xml" value="0.2" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/activity_dashboard.xml" value="0.2" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/activity_order.xml" value="0.21927083333333333" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/activity_orders.xml" value="0.21927083333333333" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/activity_products.xml" value="0.1550925925925926" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/activity_user_account.xml" value="0.21927083333333333" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/activity_users.xml" value="0.2" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/card_category_item.xml" value="0.21927083333333333" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/card_product_item.xml" value="0.264" />
+        <entry key="..\:/ELZAYET/projects/Food_Control/app/src/main/res/layout/card_user_item.xml" value="0.21927083333333333" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

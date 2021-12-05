@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "613168208170",
+    "firebase_url": "https://food-4040f-default-rtdb.firebaseio.com",
+    "project_id": "food-4040f",
+    "storage_bucket": "food-4040f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613168208170:android:888a395bb203b546932653",
+        "android_client_info": {
+          "package_name": "com.elzayet.food"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613168208170-1s7l2n5itiadaptp7n33u56ckb4uabkn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_pnVkPn_kPRfSpkc3T7e8DqJT-nJeTus"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613168208170-1s7l2n5itiadaptp7n33u56ckb4uabkn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613168208170:android:a88bf0c26cf0b186932653",
+        "android_client_info": {
+          "package_name": "com.elzayet.food_control"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613168208170-1s7l2n5itiadaptp7n33u56ckb4uabkn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_pnVkPn_kPRfSpkc3T7e8DqJT-nJeTus"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613168208170-1s7l2n5itiadaptp7n33u56ckb4uabkn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

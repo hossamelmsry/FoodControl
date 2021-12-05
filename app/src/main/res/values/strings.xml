@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Food_Control</string>
+    <string name="product_name">product_name</string>
+    <string name="product_description">product_description</string>
+    <string name="product_price">product_price</string>
+    <string name="add_product">add_product</string>
+
+    <string-array name="categorySpinner">
+        <item>بيتزا</item>
+        <item>كريب</item>
+        <item>مشويات سورية</item>
+        <item>وجبات مميزة</item>
+        <item>مكرونة فرن</item>
+        <item>سندوتشات</item>
+        <item>اطباق عربي</item>
+    </string-array>
+</resources>

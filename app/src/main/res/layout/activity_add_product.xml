@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AddProductActivity">
+
+
+    <ImageView
+        android:id="@+id/a_a_p_productImage"
+        android:layout_width="match_parent"
+        android:layout_height="152dp"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/a_a_p_productName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_5dp"
+        android:hint="@string/product_name"
+        android:inputType="text"
+        android:minHeight="48dp" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/a_a_p_productDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_5dp"
+        android:hint="@string/product_description"
+        android:inputType="text"
+        android:minHeight="48dp" />
+<!---->
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/a_a_p_productPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_5dp"
+        android:hint="@string/product_price"
+        android:inputType="numberDecimal"
+        android:minHeight="48dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+<!---->
+        <TextView
+            android:id="@+id/a_a_p_categoryText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="category = " />
+<!---->
+        <Spinner
+            android:id="@+id/a_a_p_categorySpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/space_10dp"
+            android:layout_weight="1"
+            android:minHeight="48dp"
+            android:textAlignment="textEnd"
+            tools:ignore="SpeakableTextPresentCheck" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/a_a_p_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_15dp"
+        android:text="@string/add_product"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_15sp" />
+
+</LinearLayout>
