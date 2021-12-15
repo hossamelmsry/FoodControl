@@ -8,12 +8,6 @@ public class MenuModel {
 
     public MenuModel() { }
 
-    public MenuModel(String menuId, String menuImage, String menuName) {
-        this.menuId = menuId;
-        this.menuImage = menuImage;
-        this.menuName = menuName;
-    }
-
     public String getMenuId() {
         return menuId;
     }

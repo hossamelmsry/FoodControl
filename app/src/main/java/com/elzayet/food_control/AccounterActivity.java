@@ -22,56 +22,55 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class OrdersActivity extends AppCompatActivity {
-    private final DatabaseReference KITCHEN_DB  = FirebaseDatabase.getInstance().getReference("KITCHEN");
+public class AccounterActivity extends AppCompatActivity {
+    private final DatabaseReference ACCOUNTER_DB= FirebaseDatabase.getInstance().getReference("ACCOUNTER");
     private final DatabaseReference ORDERS_DB   = FirebaseDatabase.getInstance().getReference("ORDERS");
 
-    private TextView a_o_allOrders ;
-    private RecyclerView a_o_ordersRecyclerView ;
+    private TextView a_a_allOrders;
+    private RecyclerView a_a_ordersRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_orders);
+        setContentView(R.layout.activity_accounter);
 
-        a_o_allOrders = findViewById(R.id.a_o_allOrders);
-        a_o_ordersRecyclerView = findViewById(R.id.a_o_ordersRecyclerView);
-        a_o_ordersRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
-        a_o_ordersRecyclerView.setHasFixedSize(true);
+        a_a_allOrders = findViewById(R.id.a_a_allOrders);
+        a_a_ordersRecyclerView = findViewById(R.id.a_a_ordersRecyclerView);
+        a_a_ordersRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
+        a_a_ordersRecyclerView.setHasFixedSize(true);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        KITCHEN_DB.orderByChild("orderStatus").equalTo("processed").addValueEventListener(new ValueEventListener() {
+        ACCOUNTER_DB.orderByChild("orderStatus").equalTo("Not_yet").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) { a_o_allOrders.setText("All Orders = "+ snapshot.getChildrenCount()); }
+            public void onDataChange(@NonNull DataSnapshot snapshot) { a_a_allOrders.setText("All Orders = "+ snapshot.getChildrenCount()); }
             @Override
             public void onCancelled(@NonNull DatabaseError error) { Toast.makeText(getBaseContext(), error.getCode(), Toast.LENGTH_SHORT).show(); }
         });
-
         showOrders();
     }
 
     private void showOrders() {
-        FirebaseRecyclerOptions<OrderModel> options =
-                new FirebaseRecyclerOptions.Builder<OrderModel>().setQuery(KITCHEN_DB.orderByChild("orderStatus").equalTo("processed"), OrderModel.class).setLifecycleOwner(this).build();
-        FirebaseRecyclerAdapter<OrderModel, OrdersAdapter> adapter =
-                new FirebaseRecyclerAdapter<OrderModel, OrdersAdapter>(options) {
+        FirebaseRecyclerOptions<AccounterModel> options =
+                new FirebaseRecyclerOptions.Builder<AccounterModel>().setQuery(ACCOUNTER_DB.orderByChild("orderStatus").equalTo("Not_yet"), AccounterModel.class).setLifecycleOwner(this).build();
+        FirebaseRecyclerAdapter<AccounterModel,AccounterAdapter> adapter =
+                new FirebaseRecyclerAdapter<AccounterModel,AccounterAdapter>(options) {
                     @Override
-                    protected void onBindViewHolder(@NonNull OrdersAdapter holder, int position, @NonNull OrderModel model) {
+                    protected void onBindViewHolder(@NonNull AccounterAdapter holder, int position, @NonNull AccounterModel model) {
                         String date        = model.getDate();
                         String time        = model.getTime();
                         String orderId     = model.getOrderId();
                         String phoneNumber = model.getPhoneNumber();
                         String orderPrice  = model.getOrderPrice();
-                        holder.showOrders(phoneNumber,date,time,orderId);
+                        holder.showOrders(phoneNumber,date,time,orderId,orderPrice);
                         holder.itemView.setOnClickListener(view -> {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(OrdersActivity.this);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(AccounterActivity.this);
                             builder.setTitle(R.string.options);
                             builder.setIcon(R.drawable.ic_photo_24);
                             builder.setPositiveButton(R.string.show_this_order, (dialog, which) -> showOrder(phoneNumber,orderId));
-                            builder.setNeutralButton(R.string.complite_this_order, (dialog, which) -> compliteOrder(phoneNumber,orderPrice,orderId,date,time,"Done" ));
+                            builder.setNeutralButton(R.string.complite_this_order, (dialog, which) -> compliteOrder(phoneNumber,orderPrice,orderId,date,time,"Paied" ));
                             builder.show();
                         });
                     }
@@ -79,7 +78,7 @@ public class OrdersActivity extends AppCompatActivity {
                     private void compliteOrder(String phoneNumber, String orderPrice,String orderId, String date, String time, String orderStatus) {
                         ORDERS_DB.child(phoneNumber).child(orderId).setValue(new OrderModel(phoneNumber,orderPrice,orderId,date,time,orderStatus));
                     }
-
+//
                     private void showOrder(String phoneNumber,String orderId) {
                         Intent intent = new Intent(getBaseContext(),SingleOrderActivity.class);
                         intent.putExtra("orderId",orderId);
@@ -89,32 +88,33 @@ public class OrdersActivity extends AppCompatActivity {
 
                     @NonNull
                     @Override
-                    public OrdersAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                        return new OrdersAdapter(LayoutInflater.from(parent.getContext()).inflate(R.layout.card_orders_item, parent, false));
+                    public AccounterAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        return new AccounterAdapter(LayoutInflater.from(parent.getContext()).inflate(R.layout.card_orders_item, parent, false));
                     }
                 };
-        a_o_ordersRecyclerView.setAdapter(adapter);
+        a_a_ordersRecyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         adapter.startListening();
     }
 
     ///////////////////////////////////
-    /////////Orders Adapter///////////
+    /////////Accounter Adapter/////////
     ///////////////////////////////////
-    private static class OrdersAdapter extends RecyclerView.ViewHolder {
+    private static class AccounterAdapter extends RecyclerView.ViewHolder {
 
-        public OrdersAdapter(@NonNull View itemView) {
+        public AccounterAdapter(@NonNull View itemView) {
             super(itemView);
         }
 
-        public void showOrders(String phoneNumber,String date, String time, String orderId) {
+        public void showOrders(String phoneNumber,String date, String time, String orderId,String orderPrice) {
             TextView c_o_i_phoneNumber= itemView.findViewById(R.id.c_o_i_phoneNumber);
             TextView c_o_i_dateTime   = itemView.findViewById(R.id.c_o_i_dateTime);
             TextView c_o_i_orderId    = itemView.findViewById(R.id.c_o_i_orderId);
+            TextView c_o_i_orderPrice = itemView.findViewById(R.id.c_o_i_orderPrice);
             c_o_i_phoneNumber.setText(phoneNumber);
             c_o_i_dateTime.setText(date+"\n"+time);
             c_o_i_orderId.setText("Order Num : "+orderId);
+            c_o_i_orderPrice.setText("Order Price : "+orderPrice);
         }
     }
-
 }

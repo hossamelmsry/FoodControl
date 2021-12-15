@@ -41,12 +41,12 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
 
     private Uri imageUri ;
     private ImageView a_a_p_productImage ;
-    private TextInputEditText a_a_p_productName,a_a_p_productDescription,a_a_p_productPrice;
+    private TextInputEditText a_a_p_productName,a_a_p_productDescription,a_a_p_smallSize,a_a_p_mediumSize,a_a_p_largeSize;
     private Button a_a_p_submit;
     private Spinner a_a_p_categorySpinner ;
     private TextView a_a_p_categoryText ;
     //update product
-    private String productId,productImage,productName,productDescription,productPrice;
+    private String productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize;
     //new product
     private String menuName ;
 
@@ -59,12 +59,16 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
         productId    = getIntent().getStringExtra("productId");
         productName  = getIntent().getStringExtra("productName");
         productDescription= getIntent().getStringExtra("productDescription");
-        productPrice = getIntent().getStringExtra("productPrice");
+        smallSize   = getIntent().getStringExtra("smallSize");
+        mediumSize  = getIntent().getStringExtra("mediumPrice");
+        largeSize   = getIntent().getStringExtra("largePrice");
 
         a_a_p_productImage       = findViewById(R.id.a_a_p_productImage);
         a_a_p_productName        = findViewById(R.id.a_a_p_productName);
         a_a_p_productDescription = findViewById(R.id.a_a_p_productDescription);
-        a_a_p_productPrice       = findViewById(R.id.a_a_p_productPrice);
+        a_a_p_smallSize         = findViewById(R.id.a_a_p_smallSize);
+        a_a_p_mediumSize        = findViewById(R.id.a_a_p_mediumSize);
+        a_a_p_largeSize         = findViewById(R.id.a_a_p_largeSize);
         a_a_p_submit             = findViewById(R.id.a_a_p_submit);
         a_a_p_categoryText       = findViewById(R.id.a_a_p_categoryText);
         a_a_p_categorySpinner    = findViewById(R.id.a_a_p_categorySpinner);
@@ -93,7 +97,9 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
             a_a_p_categorySpinner.setVisibility(View.GONE);
             a_a_p_productName.setText(productName);
             a_a_p_productDescription.setText(productDescription);
-            a_a_p_productPrice.setText(productPrice);
+            a_a_p_smallSize.setText(smallSize);
+            a_a_p_mediumSize.setText(mediumSize);
+            a_a_p_largeSize.setText(largeSize);
             a_a_p_categoryText.setText("Categoty = "+menuName);
         }
         a_a_p_submit.setOnClickListener(v -> validation());
@@ -102,24 +108,38 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
     public void validation() {
         productName        = a_a_p_productName.getText().toString().trim();
         productDescription = a_a_p_productDescription.getText().toString().trim();
-        productPrice       = a_a_p_productPrice.getText().toString().trim();
+        smallSize          = a_a_p_smallSize.getText().toString().trim();
+        mediumSize         = a_a_p_mediumSize.getText().toString().trim();
+        largeSize          = a_a_p_largeSize.getText().toString().trim();
         if(!TextUtils.isEmpty(productName)){
             a_a_p_productName.setError(null);
             if(!TextUtils.isEmpty(productDescription)){
                 a_a_p_productDescription.setError(null);
                 if(productDescription.length() <= 100){
                     a_a_p_productDescription.setError(null);
-                    if(!TextUtils.isEmpty(productPrice)){
-                        a_a_p_productPrice.setError(null);
-                        if (imageUri != null) { uploadImage(); }
-                        else{
-                            Toast.makeText(this, "Select a Product Image", Toast.LENGTH_SHORT).show();
-                            a_a_p_productPrice.setText("");
-                            a_a_p_productPrice.requestFocus();
+                    if(!TextUtils.isEmpty(smallSize)){
+                        a_a_p_smallSize.setError(null);
+                        if(!TextUtils.isEmpty(mediumSize)){
+                            a_a_p_mediumSize.setError(null);
+                            if(!TextUtils.isEmpty(largeSize)){
+                                a_a_p_largeSize.setError(null);
+                                if (imageUri != null) { uploadImage(); }
+                                else{
+                                    Toast.makeText(this, "Select a Product Image", Toast.LENGTH_SHORT).show();
+                                    a_a_p_largeSize.setText("");
+                                    a_a_p_largeSize.requestFocus();
+                                }
+                            }else {
+                                a_a_p_largeSize.setError(getString(R.string.large_size));
+                                a_a_p_largeSize.requestFocus();
+                            }
+                        }else {
+                            a_a_p_mediumSize.setError(getString(R.string.medium_size));
+                            a_a_p_mediumSize.requestFocus();
                         }
-                    }else{
-                        a_a_p_productPrice.setError(getString(R.string.product_price));
-                        a_a_p_productPrice.requestFocus();
+                    }else {
+                        a_a_p_smallSize.setError(getString(R.string.small_size));
+                        a_a_p_smallSize.requestFocus();
                     }
                 }else{
                     a_a_p_productDescription.setError("The letters Are Too Match");
@@ -175,9 +195,38 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
 //
     private void createNewData() {
         DatabaseReference PRODUCTS_DB = FirebaseDatabase.getInstance().getReference("PRODUCTS");
-        if (productName == null) { productId = PRODUCTS_DB.push().getKey(); }
-        PRODUCTS_DB.child(productId).setValue(new ProductModel(menuName,productId,productImage,productName,productDescription,productPrice));
+        productId = PRODUCTS_DB.push().getKey();
+        PRODUCTS_DB.child(productId).setValue(new ProductModel(menuName,productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
         finish();
+//        for(int z = 1 ; z <= 5 ; z++){
+//            productId = PRODUCTS_DB.push().getKey();
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("بيتزا",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//        }
+//        for(int z = 1 ; z <= 5 ; z++){
+//            productId = PRODUCTS_DB.push().getKey();
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("كريب",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//        }
+//        for(int z = 1 ; z <= 5 ; z++){
+//            productId = PRODUCTS_DB.push().getKey();
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("مشويات سورية",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//        }
+//        for(int z = 1 ; z <= 5 ; z++){
+//            productId = PRODUCTS_DB.push().getKey();
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("وجبات مميزة",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//        }
+//        for(int z = 1 ; z <= 5 ; z++){
+//            productId = PRODUCTS_DB.push().getKey();
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("مكرونة فرن",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//        }
+//        for(int z = 1 ; z <= 5 ; z++){
+//            productId = PRODUCTS_DB.push().getKey();
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("سندوتشات",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//        }
+//        for(int z = 1 ; z <= 5 ; z++){
+//            productId = PRODUCTS_DB.push().getKey();
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("اطباق عربي",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//        }
+//        if (productName == null) { productId = PRODUCTS_DB.push().getKey(); }
     }
 
     @Override
@@ -188,9 +237,9 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
     @Override
     public void onNothingSelected(AdapterView<?> parent) { }
 
-//    ////////////////////////////////////
-//    ///////////checkPermission//////////
-//    ////////////////////////////////////
+    ////////////////////////////////////
+    ///////////checkPermission//////////
+    ////////////////////////////////////
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
         return result == PackageManager.PERMISSION_GRANTED ;

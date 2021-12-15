@@ -38,10 +38,26 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/a_d_coupons"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="coupons" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/a_d_coupons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="2dp"
+            android:text="coupons" />
+
+        <Button
+            android:id="@+id/a_d_accounter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:text="Accounter" />
+    </LinearLayout>
 
 </LinearLayout>

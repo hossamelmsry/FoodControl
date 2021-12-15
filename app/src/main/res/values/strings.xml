@@ -2,8 +2,13 @@
     <string name="app_name">Food_Control</string>
     <string name="product_name">product_name</string>
     <string name="product_description">product_description</string>
-    <string name="product_price">product_price</string>
+    <string name="small_size">small size</string>
+    <string name="medium_size">medium size</string>
+    <string name="large_size">large size</string>
     <string name="add_product">add_product</string>
+    <string name="options">Options</string>
+    <string name="show_this_order">Show This Order</string>
+    <string name="complite_this_order">Complite This Order</string>
 
     <string-array name="categorySpinner">
         <item>بيتزا</item>

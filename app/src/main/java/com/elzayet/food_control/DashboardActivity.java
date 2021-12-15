@@ -19,11 +19,13 @@ public class DashboardActivity extends AppCompatActivity {
         Button a_d_users    = findViewById(R.id.a_d_users);
         Button a_d_orders   = findViewById(R.id.a_d_orders);
         Button a_d_coupons  = findViewById(R.id.a_d_coupons);
+        Button a_d_accounter= findViewById(R.id.a_d_accounter);
 
         a_d_products.setOnClickListener(v -> startActivity(new Intent(getBaseContext(),ProductsActivity.class)));
         a_d_users.setOnClickListener(v -> startActivity(new Intent(getBaseContext(),UsersActivity.class)));
         a_d_orders.setOnClickListener(v -> startActivity(new Intent(getBaseContext(),OrdersActivity.class)));
         a_d_coupons.setOnClickListener(v -> startActivity(new Intent(getBaseContext(),CouponActivity.class)));
+        a_d_accounter.setOnClickListener(v -> startActivity(new Intent(getBaseContext(),AccounterActivity.class)));
 
     }
 }

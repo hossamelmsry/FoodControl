@@ -10,13 +10,14 @@
     <androidx.cardview.widget.CardView
         android:layout_width="@dimen/space_50dp"
         android:layout_height="@dimen/space_50dp"
-        app:cardCornerRadius="50dp">
+        app:cardCornerRadius="30dp">
 
         <ImageView
             android:id="@+id/c_c_i_menuImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:srcCompat="@android:drawable/ic_menu_gallery" />
+            android:padding="2dp"
+            android:src="@drawable/ic_photo_24" />
     </androidx.cardview.widget.CardView>
 
     <TextView

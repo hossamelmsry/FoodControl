@@ -7,7 +7,6 @@
     android:orientation="vertical"
     tools:context=".AddProductActivity">
 
-
     <ImageView
         android:id="@+id/a_a_p_productImage"
         android:layout_width="match_parent"
@@ -32,14 +31,41 @@
         android:inputType="text"
         android:minHeight="48dp" />
 <!---->
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/a_a_p_productPrice"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_5dp"
-        android:hint="@string/product_price"
-        android:inputType="numberDecimal"
-        android:minHeight="48dp" />
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/a_a_p_smallSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/small_size"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/a_a_p_mediumSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_5dp"
+            android:layout_marginEnd="@dimen/space_5dp"
+            android:layout_weight="1"
+            android:hint="@string/medium_size"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/a_a_p_largeSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/large_size"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"

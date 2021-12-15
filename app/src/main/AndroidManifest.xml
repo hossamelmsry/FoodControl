@@ -15,13 +15,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Food_Control">
         <activity
+            android:name=".AccounterActivity"
+            android:exported="true" />
+        <activity
             android:name=".CouponActivity"
             android:exported="true" />
         <activity
             android:name=".AddProductActivity"
             android:exported="true" />
         <activity
-            android:name=".OrderActivity"
+            android:name=".SingleOrderActivity"
             android:exported="true" />
         <activity
             android:name=".UserAccountActivity"

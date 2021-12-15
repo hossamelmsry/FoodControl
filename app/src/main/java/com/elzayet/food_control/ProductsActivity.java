@@ -116,8 +116,7 @@ public class ProductsActivity extends AppCompatActivity {
                         String productImage = model.getProductImage();
                         String productName  = model.getProductName();
                         String productDescription  = model.getProductDescription();
-                        String productPrice = model.getProductPrice();
-                        holder.showProduct(productImage,productName,productPrice);
+                        holder.showProduct(productImage,productName);
                         holder.c_p_i_edit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -127,7 +126,6 @@ public class ProductsActivity extends AppCompatActivity {
                                 intent.putExtra("productImage",productImage);
                                 intent.putExtra("productName",productName);
                                 intent.putExtra("productDescription",productDescription);
-                                intent.putExtra("productPrice",productPrice);
                                 startActivity(intent);
                             }
                         });
@@ -170,14 +168,14 @@ public class ProductsActivity extends AppCompatActivity {
             super(itemView);
         }
 
-        public void showProduct( String productImage,String  productName,String  productPrice) {
+        public void showProduct( String productImage,String  productName) {
             c_p_i_edit   = itemView.findViewById(R.id.c_p_i_edit);
             c_p_i_delete = itemView.findViewById(R.id.c_p_i_delete);
             ImageView c_p_i_productImage= itemView.findViewById(R.id.c_p_i_productImage);
             TextView c_p_i_productName  = itemView.findViewById(R.id.c_p_i_productdetails);
 
             Picasso.get().load(productImage).placeholder(R.drawable.ic_photo_24).error(R.drawable.ic_photo_24).into(c_p_i_productImage);
-            c_p_i_productName.setText(productName + "\n" +productPrice + "\n" + Integer.toString(Integer.parseInt(productPrice) * 100));
+            c_p_i_productName.setText(productName + "\n"  + "\n" );
         }
 
         public void showMenu(String menuImage,String menuName){
