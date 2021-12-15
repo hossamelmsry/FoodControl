@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Food_Control">
         <activity
+            android:name=".PaymentActivity"
+            android:exported="false" />
+        <activity
             android:name=".AccounterActivity"
             android:exported="true" />
         <activity
