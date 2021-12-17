@@ -70,15 +70,21 @@ public class AccounterActivity extends AppCompatActivity {
                             builder.setTitle(R.string.options);
                             builder.setIcon(R.drawable.ic_photo_24);
                             builder.setPositiveButton(R.string.show_this_order, (dialog, which) -> showOrder(phoneNumber,orderId));
-                            builder.setNeutralButton(R.string.complite_this_order, (dialog, which) -> compliteOrder(phoneNumber,orderPrice,orderId,date,time,"Paied" ));
+//                            builder.setNeutralButton(R.string.payment, (dialog, which) -> compliteOrder(phoneNumber,orderPrice,orderId,date,time,"Paied" ));
+                            builder.setNegativeButton(R.string.payment, (dialog, which) -> paymentMethod(phoneNumber,orderPrice,orderId));
                             builder.show();
                         });
                     }
 
-                    private void compliteOrder(String phoneNumber, String orderPrice,String orderId, String date, String time, String orderStatus) {
-                        ORDERS_DB.child(phoneNumber).child(orderId).setValue(new OrderModel(phoneNumber,orderPrice,orderId,date,time,orderStatus));
+                    private void paymentMethod(String phoneNumber, String orderPrice,String orderId) {
+                        Intent intent = new Intent(AccounterActivity.this,PaymentActivity.class);
+                        intent.putExtra("orderPhoneNumber",phoneNumber);
+                        intent.putExtra("orderPrice",orderPrice);
+                        intent.putExtra("orderId",orderId);
+                        startActivity(intent);
+//                        ORDERS_DB.child(phoneNumber).child(orderId).setValue(new OrderModel(phoneNumber,orderPrice,orderId,date,time,orderStatus));
                     }
-//
+
                     private void showOrder(String phoneNumber,String orderId) {
                         Intent intent = new Intent(getBaseContext(),SingleOrderActivity.class);
                         intent.putExtra("orderId",orderId);

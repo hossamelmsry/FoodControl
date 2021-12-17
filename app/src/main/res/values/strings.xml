@@ -9,6 +9,7 @@
     <string name="options">Options</string>
     <string name="show_this_order">Show This Order</string>
     <string name="complite_this_order">Complite This Order</string>
+    <string name="payment">Payment</string>
 
     <string-array name="categorySpinner">
         <item>بيتزا</item>
