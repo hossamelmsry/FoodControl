@@ -7,10 +7,10 @@ public class AccounterModel {
 
     public AccounterModel(String phoneNumber, String orderId, String orderPrice, String date,String time, String payment) {
         this.phoneNumber = phoneNumber;
-        this.orderId = orderId;
-        this.payment = payment;
-        this.date = date;
-        this.time = time;
+        this.orderId     = orderId;
+        this.payment     = payment;
+        this.date        = date;
+        this.time        = time;
         this.orderPrice = orderPrice;
     }
 

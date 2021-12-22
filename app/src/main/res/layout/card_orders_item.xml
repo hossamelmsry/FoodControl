@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/space_5dp"
     android:background="@drawable/bg_purple_700_outline"
+    android:padding="@dimen/space_5dp"
     app:layout_goneMarginBottom="@dimen/space_10dp">
 
     <TextView
@@ -23,7 +24,6 @@
         android:id="@+id/c_o_i_dateTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
         android:textSize="9sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/c_o_i_phoneNumber" />
@@ -32,8 +32,6 @@
         android:id="@+id/c_o_i_orderId"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:padding="@dimen/space_10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/c_o_i_phoneNumber" />

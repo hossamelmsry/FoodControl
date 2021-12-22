@@ -24,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class AccounterActivity extends AppCompatActivity {
     private final DatabaseReference ACCOUNTER_DB= FirebaseDatabase.getInstance().getReference("ACCOUNTER");
-    private final DatabaseReference ORDERS_DB   = FirebaseDatabase.getInstance().getReference("ORDERS");
+    private final DatabaseReference KITCHEN_DB  = FirebaseDatabase.getInstance().getReference("KITCHEN");
 
     private TextView a_a_allOrders;
     private RecyclerView a_a_ordersRecyclerView;
@@ -43,7 +43,7 @@ public class AccounterActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        ACCOUNTER_DB.orderByChild("orderStatus").equalTo("Not_yet").addValueEventListener(new ValueEventListener() {
+        ACCOUNTER_DB.orderByChild("payment").equalTo("Not_yet").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) { a_a_allOrders.setText("All Orders = "+ snapshot.getChildrenCount()); }
             @Override
@@ -54,35 +54,47 @@ public class AccounterActivity extends AppCompatActivity {
 
     private void showOrders() {
         FirebaseRecyclerOptions<AccounterModel> options =
-                new FirebaseRecyclerOptions.Builder<AccounterModel>().setQuery(ACCOUNTER_DB.orderByChild("orderStatus").equalTo("Not_yet"), AccounterModel.class).setLifecycleOwner(this).build();
+                new FirebaseRecyclerOptions.Builder<AccounterModel>().setQuery(ACCOUNTER_DB.orderByChild("payment").equalTo("Not Paid"), AccounterModel.class).setLifecycleOwner(this).build();
         FirebaseRecyclerAdapter<AccounterModel,AccounterAdapter> adapter =
                 new FirebaseRecyclerAdapter<AccounterModel,AccounterAdapter>(options) {
                     @Override
                     protected void onBindViewHolder(@NonNull AccounterAdapter holder, int position, @NonNull AccounterModel model) {
-                        String date        = model.getDate();
-                        String time        = model.getTime();
-                        String orderId     = model.getOrderId();
                         String phoneNumber = model.getPhoneNumber();
                         String orderPrice  = model.getOrderPrice();
+                        String orderId     = model.getOrderId();
+                        String date        = model.getDate();
+                        String time        = model.getTime();
                         holder.showOrders(phoneNumber,date,time,orderId,orderPrice);
-                        holder.itemView.setOnClickListener(view -> {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(AccounterActivity.this);
-                            builder.setTitle(R.string.options);
-                            builder.setIcon(R.drawable.ic_photo_24);
-                            builder.setPositiveButton(R.string.show_this_order, (dialog, which) -> showOrder(phoneNumber,orderId));
-//                            builder.setNeutralButton(R.string.payment, (dialog, which) -> compliteOrder(phoneNumber,orderPrice,orderId,date,time,"Paied" ));
-                            builder.setNegativeButton(R.string.payment, (dialog, which) -> paymentMethod(phoneNumber,orderPrice,orderId));
-                            builder.show();
+                        KITCHEN_DB.child(orderId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                OrderModel orderModel = snapshot.getValue(OrderModel.class);
+                                String orderStatus = orderModel.getOrderStatus();
+                                holder.itemView.setOnClickListener(view -> {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(AccounterActivity.this);
+                                    builder.setTitle(R.string.options);
+                                    builder.setIcon(R.drawable.ic_photo_24);
+                                    builder.setPositiveButton(R.string.show_this_order, (dialog, which) -> showOrder(phoneNumber,orderId));
+                                    builder.setNegativeButton(R.string.payment, (dialog, which) -> paymentMethod(phoneNumber,orderPrice,orderId,date,time,orderStatus));
+                                    builder.show();
+                                });
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(getBaseContext(), error.getCode(), Toast.LENGTH_SHORT).show();
+                            }
                         });
                     }
 
-                    private void paymentMethod(String phoneNumber, String orderPrice,String orderId) {
+                    private void paymentMethod(String phoneNumber,String orderPrice,String orderId,String date,String time,String orderStatus) {
                         Intent intent = new Intent(AccounterActivity.this,PaymentActivity.class);
-                        intent.putExtra("orderPhoneNumber",phoneNumber);
+                        intent.putExtra("phoneNumber",phoneNumber);
                         intent.putExtra("orderPrice",orderPrice);
                         intent.putExtra("orderId",orderId);
+                        intent.putExtra("time",time);
+                        intent.putExtra("date",date);
+                        intent.putExtra("orderStatus",orderStatus);
                         startActivity(intent);
-//                        ORDERS_DB.child(phoneNumber).child(orderId).setValue(new OrderModel(phoneNumber,orderPrice,orderId,date,time,orderStatus));
                     }
 
                     private void showOrder(String phoneNumber,String orderId) {

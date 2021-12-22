@@ -71,13 +71,14 @@ public class OrdersActivity extends AppCompatActivity {
                             builder.setTitle(R.string.options);
                             builder.setIcon(R.drawable.ic_photo_24);
                             builder.setPositiveButton(R.string.show_this_order, (dialog, which) -> showOrder(phoneNumber,orderId));
-                            builder.setNeutralButton(R.string.complite_this_order, (dialog, which) -> compliteOrder(phoneNumber,orderPrice,orderId,date,time,"Done" ));
+                            builder.setNeutralButton(R.string.complite_this_order, (dialog, which) -> compliteOrder(phoneNumber,orderPrice,orderId,date,time));
                             builder.show();
                         });
                     }
 
-                    private void compliteOrder(String phoneNumber, String orderPrice,String orderId, String date, String time, String orderStatus) {
-                        ORDERS_DB.child(phoneNumber).child(orderId).setValue(new OrderModel(phoneNumber,orderPrice,orderId,date,time,orderStatus));
+                    private void compliteOrder(String phoneNumber, String orderPrice, String orderId, String date, String time) {
+                        KITCHEN_DB.child(orderId).setValue(new OrderModel(phoneNumber,orderPrice,orderId,date,time, "Done"));
+                        ORDERS_DB.child(phoneNumber).child(orderId).setValue(new OrderModel(orderId,orderPrice,date, time,"Done","Not Paid",""));
                     }
 
                     private void showOrder(String phoneNumber,String orderId) {
