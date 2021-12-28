@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,7 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -37,6 +38,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 public class AddProductActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    private final DatabaseReference PRODUCTS_DB = FirebaseDatabase.getInstance().getReference("PRODUCTS");
+    private final StorageReference storageRef   = FirebaseStorage.getInstance().getReference("PRODUCTS");
     public static final int GALLERY_REQUEST = 3 ;
 
     private Uri imageUri ;
@@ -46,7 +49,7 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
     private Spinner a_a_p_categorySpinner ;
     private TextView a_a_p_categoryText ;
     //update product
-    private String productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize;
+    private String productId,productName,productDescription,smallSize,mediumSize,largeSize,productImage;
     //new product
     private String menuName ;
 
@@ -55,20 +58,21 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
 
-        menuName     = getIntent().getStringExtra("menuName");
-        productId    = getIntent().getStringExtra("productId");
-        productName  = getIntent().getStringExtra("productName");
+        menuName       = getIntent().getStringExtra("menuName");
+        productId      = getIntent().getStringExtra("productId");
+        productName    = getIntent().getStringExtra("productName");
         productDescription= getIntent().getStringExtra("productDescription");
-        smallSize   = getIntent().getStringExtra("smallSize");
-        mediumSize  = getIntent().getStringExtra("mediumPrice");
-        largeSize   = getIntent().getStringExtra("largePrice");
+        smallSize      = getIntent().getStringExtra("smallSize");
+        mediumSize     = getIntent().getStringExtra("mediumPrice");
+        largeSize      = getIntent().getStringExtra("largePrice");
+        productImage   = getIntent().getStringExtra("productImage");
 
         a_a_p_productImage       = findViewById(R.id.a_a_p_productImage);
         a_a_p_productName        = findViewById(R.id.a_a_p_productName);
         a_a_p_productDescription = findViewById(R.id.a_a_p_productDescription);
-        a_a_p_smallSize         = findViewById(R.id.a_a_p_smallSize);
-        a_a_p_mediumSize        = findViewById(R.id.a_a_p_mediumSize);
-        a_a_p_largeSize         = findViewById(R.id.a_a_p_largeSize);
+        a_a_p_smallSize          = findViewById(R.id.a_a_p_smallSize);
+        a_a_p_mediumSize         = findViewById(R.id.a_a_p_mediumSize);
+        a_a_p_largeSize          = findViewById(R.id.a_a_p_largeSize);
         a_a_p_submit             = findViewById(R.id.a_a_p_submit);
         a_a_p_categoryText       = findViewById(R.id.a_a_p_categoryText);
         a_a_p_categorySpinner    = findViewById(R.id.a_a_p_categorySpinner);
@@ -83,6 +87,9 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
     @Override
     protected void onStart() {
         super.onStart();
+        if(productId == null){
+            productId = PRODUCTS_DB.push().getKey();
+        }
         if(productName == null) {
             a_a_p_productImage.setOnClickListener(v -> {
                 if (checkPermission()) { openGallery(); }
@@ -168,63 +175,72 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
             a_a_p_productImage.setImageURI(imageUri);
         }
     }
+
+    private String getFileExtension(Uri uri){
+        ContentResolver cr = getContentResolver();
+        MimeTypeMap mm = MimeTypeMap.getSingleton();
+        return mm.getExtensionFromMimeType(cr.getType(uri));
+    }
+
     private void uploadImage() {
         ProgressDialog progressDialog = new ProgressDialog(AddProductActivity.this);
         progressDialog.setMessage("Please Wait");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        StorageReference productImageRef = FirebaseStorage.getInstance().getReference().child("PRODUCTS") ;
-        final StorageReference filePath  = productImageRef.child(imageUri.getLastPathSegment() + System.currentTimeMillis() + ".jpg");
-        final UploadTask uploadTask      = filePath.putFile(imageUri);
-        uploadTask.addOnFailureListener(e -> {
-            progressDialog.dismiss();
-            Toast.makeText(AddProductActivity.this, " ...حدث خطأ اثناء تحميل الصورة ..." + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }).addOnSuccessListener(taskSnapshot -> uploadTask.continueWithTask(task -> {
+        final StorageReference reference= storageRef.child(productId+"."+getFileExtension(imageUri));
+        final UploadTask uploadTask    = reference.putFile(imageUri);
+
+        uploadTask.addOnSuccessListener(taskSnapshot -> uploadTask.continueWithTask(task -> {
             if (!task.isSuccessful()) { throw task.getException(); }
-            productImage = filePath.getDownloadUrl().toString();
-            return filePath.getDownloadUrl();
+            productImage = reference.getDownloadUrl().toString();
+            return reference.getDownloadUrl();
         }).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 productImage = task.getResult().toString();
                 Toast.makeText(getBaseContext(), "تم تحميل الصورة ", Toast.LENGTH_SHORT).show();
                 createNewData();
             }
-        }));
+        })).addOnFailureListener(e -> {
+            progressDialog.dismiss();
+            Toast.makeText(AddProductActivity.this, " ...حدث خطأ اثناء تحميل الصورة ..." + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }).addOnProgressListener(snapshot -> {
+            double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+            progressDialog.setMessage("Uploading "+ (int)progress+" %");
+        });
     }
 //
     private void createNewData() {
-        DatabaseReference PRODUCTS_DB = FirebaseDatabase.getInstance().getReference("PRODUCTS");
-        productId = PRODUCTS_DB.push().getKey();
+
         PRODUCTS_DB.child(productId).setValue(new ProductModel(menuName,productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
         finish();
 //        for(int z = 1 ; z <= 5 ; z++){
 //            productId = PRODUCTS_DB.push().getKey();
-//            PRODUCTS_DB.child(productId).setValue(new ProductModel("بيتزا",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("بيتزا",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize,productImageUrl));
 //        }
 //        for(int z = 1 ; z <= 5 ; z++){
 //            productId = PRODUCTS_DB.push().getKey();
-//            PRODUCTS_DB.child(productId).setValue(new ProductModel("كريب",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("كريب",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize,productImageUrl));
 //        }
 //        for(int z = 1 ; z <= 5 ; z++){
 //            productId = PRODUCTS_DB.push().getKey();
-//            PRODUCTS_DB.child(productId).setValue(new ProductModel("مشويات سورية",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("مشويات سورية",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize,productImageUrl));
 //        }
 //        for(int z = 1 ; z <= 5 ; z++){
 //            productId = PRODUCTS_DB.push().getKey();
-//            PRODUCTS_DB.child(productId).setValue(new ProductModel("وجبات مميزة",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("وجبات مميزة",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize,productImageUrl));
 //        }
 //        for(int z = 1 ; z <= 5 ; z++){
 //            productId = PRODUCTS_DB.push().getKey();
-//            PRODUCTS_DB.child(productId).setValue(new ProductModel("مكرونة فرن",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("مكرونة فرن",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize,productImageUrl));
 //        }
 //        for(int z = 1 ; z <= 5 ; z++){
 //            productId = PRODUCTS_DB.push().getKey();
-//            PRODUCTS_DB.child(productId).setValue(new ProductModel("سندوتشات",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("سندوتشات",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize,productImageUrl));
 //        }
 //        for(int z = 1 ; z <= 5 ; z++){
 //            productId = PRODUCTS_DB.push().getKey();
-//            PRODUCTS_DB.child(productId).setValue(new ProductModel("اطباق عربي",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize));
+//            PRODUCTS_DB.child(productId).setValue(new ProductModel("اطباق عربي",productId,productImage,productName,productDescription,smallSize,mediumSize,largeSize,productImageUrl));
 //        }
 //        if (productName == null) { productId = PRODUCTS_DB.push().getKey(); }
     }
@@ -247,9 +263,8 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, GALLERY_REQUEST);
     }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
         switch (requestCode) {
             case GALLERY_REQUEST:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -272,7 +287,6 @@ public class AddProductActivity extends AppCompatActivity implements AdapterView
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(AddProductActivity.this)
                 .setMessage(message)

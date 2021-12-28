@@ -8,15 +8,15 @@ public class ProductModel {
 
     public ProductModel() { }
 
-    public ProductModel(String menuName, String productId, String productImage, String productName, String productDescription, String smallSize, String mediumSize, String largeSize) {
-        this.menuName = menuName;
-        this.productId = productId;
+    public ProductModel(String menuName,String productId,String productImage,String productName,String productDescription,String smallSize,String mediumSize,String largeSize) {
+        this.menuName     = menuName;
+        this.productId    = productId;
         this.productImage = productImage;
-        this.productName = productName;
+        this.productName  = productName;
+        this.smallSize    = smallSize;
+        this.mediumSize   = mediumSize;
+        this.largeSize    = largeSize;
         this.productDescription = productDescription;
-        this.smallSize = smallSize;
-        this.mediumSize = mediumSize;
-        this.largeSize = largeSize;
     }
 
     public String getMenuName() { return menuName; }

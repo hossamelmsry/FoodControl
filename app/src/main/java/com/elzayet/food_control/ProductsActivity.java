@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,13 +25,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 public class ProductsActivity extends AppCompatActivity {
     private TextView a_p_allProducts;
     private RecyclerView a_p_productsRecycler ,a_p_categoryRecycler;
-    private FloatingActionButton a_p_addProduct ;
     private final DatabaseReference PRODUCTS_DB = FirebaseDatabase.getInstance().getReference("PRODUCTS");
+    private final StorageReference storageRef   = FirebaseStorage.getInstance().getReference("PRODUCTS");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,7 @@ public class ProductsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_products);
         a_p_allProducts      = findViewById(R.id.a_p_allProducts);
-        a_p_addProduct       = findViewById(R.id.a_p_addProduct);
+        FloatingActionButton a_p_addProduct = findViewById(R.id.a_p_addProduct);
 
         a_p_categoryRecycler = findViewById(R.id.a_p_categoryRecycler);
         a_p_categoryRecycler.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -111,21 +115,27 @@ public class ProductsActivity extends AppCompatActivity {
                 new FirebaseRecyclerAdapter<ProductModel, productsAdapter>(options) {
                     @Override
                     protected void onBindViewHolder(@NonNull productsAdapter holder, int position, @NonNull ProductModel model) {
-                        String menuName    = model.getMenuName();
-                        String productId    = model.getProductId();
-                        String productImage = model.getProductImage();
-                        String productName  = model.getProductName();
-                        String productDescription  = model.getProductDescription();
+                        String menuName           = model.getMenuName();
+                        String productId          = model.getProductId();
+                        String productImage       = model.getProductImage();
+                        String productName        = model.getProductName();
+                        String productDescription = model.getProductDescription();
+                        String smallSize          = model.getSmallSize();
+                        String mediumSize         = model.getMediumSize();
+                        String largeSize          = model.getLargeSize();
                         holder.showProduct(productImage,productName);
                         holder.c_p_i_edit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(getBaseContext() , AddProductActivity.class);
-                                intent.putExtra("menuName",menuName);
-                                intent.putExtra("productId",productId);
-                                intent.putExtra("productImage",productImage);
-                                intent.putExtra("productName",productName);
+                                intent.putExtra("menuName"          ,menuName);
+                                intent.putExtra("productId"         ,productId);
+                                intent.putExtra("productImage"      ,productImage);
+                                intent.putExtra("productName"       ,productName);
                                 intent.putExtra("productDescription",productDescription);
+                                intent.putExtra("smallSize"         ,smallSize);
+                                intent.putExtra("mediumSize"        ,mediumSize);
+                                intent.putExtra("largeSize"         ,largeSize);
                                 startActivity(intent);
                             }
                         });
@@ -133,17 +143,17 @@ public class ProductsActivity extends AppCompatActivity {
                         holder.c_p_i_delete.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                PRODUCTS_DB.child(productId).addValueEventListener(new ValueEventListener() {
+
+                                FirebaseStorage.getInstance().getReferenceFromUrl(productImage).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if(snapshot.exists()){
-                                            PRODUCTS_DB.child(productId).removeValue();                                        }
+                                    public void onSuccess(Void aVoid) {
+                                        PRODUCTS_DB.child(productId).removeValue();
                                     }
+                                }).addOnFailureListener(new OnFailureListener() {
                                     @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                        Toast.makeText(getBaseContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
+                                    public void onFailure(@NonNull Exception e) { Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show(); }
                                 });
+
                             }
                         });
                     }
